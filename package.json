@@ -1,0 +1,11 @@
+{
+  "name": "asana-json",
+  "version": "1.0.0",
+  "description": "transforms a json file from asana into a csv.",
+  "main": "convert.js",
+  "author": "Gilbert Corrales",
+  "license": "MIT",
+  "dependencies": {
+    "json2csv": "^4.2.1"
+  }
+}
