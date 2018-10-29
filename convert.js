@@ -15,41 +15,60 @@ const fields = [
   "ParentTask"
 ];
 
-let justDate = date => {
+let simplifyDate = date => {
   if (!date) return "";
 
   let d = new Date(date);
-  return `${d.getDay()}\/${d.getMonth()}\/${d.getFullYear()}`;
+  return `${d.getDate()}\/${d.getMonth()}\/${d.getFullYear()}`;
 };
 
-let simplify = task => ({
+let simplifyTask = task => ({
   TaskID: task.gid,
-  CreatedAt: justDate(task.created_at),
-  CompletedAt: justDate(task.completed_at),
-  LastModified: justDate(task.modified_at),
+  CreatedAt: simplifyDate(task.created_at),
+  CompletedAt: simplifyDate(task.completed_at),
+  LastModified: simplifyDate(task.modified_at),
   Name: task.name,
   Assignee: task.assignee ? task.assignee.name : "",
-  StartDate: justDate(task.start_on),
-  DueDate: justDate(task.due_on),
+  StartDate: simplifyDate(task.start_on),
+  DueDate: simplifyDate(task.due_on),
   ParentTask: task.parent ? task.parent.name : ""
 });
+
+let generateFileName = () => {
+  const days = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+  ];
+  let date = new Date();
+  let day = date.getDay();
+  let time = date.getHours();
+
+  return `${days[day - 1]}-${date.getDate()}-${
+    time < 12 ? "morning" : "afternoon"
+  }.csv`;
+};
 
 let tasks = [];
 
 for (var task of data.data) {
   // parent task
-  tasks.push(simplify(task));
+  tasks.push(simplifyTask(task));
 
   // subtasks
   for (var sub of task.subtasks) {
-    tasks.push(simplify(sub));
+    tasks.push(simplifyTask(sub));
   }
 }
 
 const parser = new Json2csvParser({ fields });
 const csv = parser.parse(tasks);
 
-fs.writeFile("out.csv", csv, function(err) {
+fs.writeFile(generateFileName(), csv, function(err) {
   if (err) {
     return console.log(err);
   }
