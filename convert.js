@@ -19,7 +19,7 @@ let simplifyDate = date => {
   if (!date) return "";
 
   let d = new Date(date);
-  return `${d.getDate()}\/${d.getMonth()}\/${d.getFullYear()}`;
+  return `${d.getDate()}\/${d.getMonth() + 1}\/${d.getFullYear()}`;
 };
 
 let simplifyTask = task => ({
